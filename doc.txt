@@ -1,0 +1,5 @@
+                NODEJS
+V8 - js to machine language 
+Libuv:
+    - I/O - input/output (fs) cross-platform
+    - Event Loop

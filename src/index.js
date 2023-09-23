@@ -1,17 +1,25 @@
-// require("dotenv").config({ path: "./config/.env" });
-// require("./lessons/process");
-// require("./lessons/path");
-// require("./lessons/url");
-// require("./lessons/file-system");
-// require("./lessons/file-system-work");
-// require("./lessons/os");
-// require("./lessons/events");
-// require("./lessons/streams");
-
 const PORT = process.env.PORT || 4000;
 
-const router = require("./framework/router");
+// const bodyParser = require("./framework/parseBody"); // fix
+const jsonParser = require("./framework/parseJson");
 
-const app = require("./framework");
+const router = require("./app/router");
 
-app.listen(PORT);
+const App = require("./framework");
+
+const app = new App();
+
+app.use(jsonParser);
+// app.use(bodyParser); // fix
+
+app.addRouter(router);
+
+const start = () => {
+	try {
+		app.listen(PORT, () => console.log(`Api is starting on port ${PORT}`));
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+start();

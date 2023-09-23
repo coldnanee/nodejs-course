@@ -4,10 +4,17 @@ const http = require("http");
 class App {
 	constructor() {
 		this.emitter = new EventEmitter();
-		this.server = http.createServer();
+		this.server = this._createServer();
+		this.middlewares = [];
 	}
 
-	addRouter(endpoints) {
+	use(middleware) {
+		this.middlewares.push(middleware);
+	}
+
+	addRouter(router) {
+		const { endpoints } = router;
+
 		Object.keys(endpoints).forEach((pathItem) => {
 			const path = endpoints[pathItem];
 
@@ -24,11 +31,25 @@ class App {
 		return `${path}:${method}`;
 	}
 
-	listen(port) {
-		this.server.listen(port, () =>
-			console.log(`Api is starting on port ${port}`)
-		);
+	_createServer() {
+		return http.createServer((req, res) => {
+			this.middlewares.forEach((middleware) => middleware(req, res));
+
+			const emitted = this.emitter.emit(
+				this._getRouteMask(req.url, req.method),
+				req,
+				res
+			);
+
+			if (!emitted) {
+				return res.end("Not found!");
+			}
+		});
+	}
+
+	listen(port, cb) {
+		this.server.listen(port, cb);
 	}
 }
 
-module.exports = new App();
+module.exports = App;

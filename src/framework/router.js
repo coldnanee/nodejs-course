@@ -31,4 +31,4 @@ class Router {
 	}
 }
 
-module.exports = new Router();
+module.exports = Router;

@@ -1,15 +1,11 @@
 const Router = require("../framework/router");
 
+const userController = require("./user-controller");
+
 const router = new Router();
 
-const users = [{ id: 1, name: "paul" }];
+router.get("/users", userController.getUsers);
 
-router.get("/users", (req, res) => {
-	res.send(users);
-});
-
-router.post("/users", (req, res) => {
-	console.log(req.body);
-});
+router.post("/users", userController.addUser);
 
 module.exports = router;
